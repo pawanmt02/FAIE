@@ -49,6 +49,8 @@ function App() {
   const [query, setQuery] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [checks, setChecks] = useState(checkItems);
+  const [isScanning, setIsScanning] = useState(false);
+  const [showAllChecks, setShowAllChecks] = useState(false);
 
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? 'dark' : 'light';
@@ -63,6 +65,13 @@ function App() {
   const toggleCheck = (id) => {
     setChecks((current) => current.map((item) => (item.id === id ? { ...item, status: item.status === 'Passed' ? 'Review' : 'Passed', tone: item.status === 'Passed' ? 'amber' : 'mint' } : item)));
   };
+
+  const runScan = () => {
+    setIsScanning(true);
+    window.setTimeout(() => setIsScanning(false), 900);
+  };
+
+  const visibleChecks = showAllChecks ? filteredChecks : filteredChecks.slice(0, 5);
 
   return (
     <div className="app-shell">
@@ -106,7 +115,7 @@ function App() {
         <div className="page-content">
           <section className="page-heading">
             <div><p className="eyebrow">Quality operations <span>•</span> Sep 19, 2026</p><h1>{activeView === 'Overview' ? 'Good morning, Pawan.' : activeView}</h1><p className="heading-copy">Your frontend baseline is healthy. Here is where the project stands today.</p></div>
-            <button className="primary-button"><ExternalLink size={16} />View report</button>
+            <button className="primary-button" onClick={() => window.print()}><ExternalLink size={16} />View report</button>
           </section>
 
           <section className="metric-grid" aria-label="Quality metrics">
@@ -114,8 +123,8 @@ function App() {
           </section>
 
           <div className="dashboard-grid">
-            <section className="panel checks-panel"><div className="panel-heading"><div><p className="eyebrow">Continuous verification</p><h2>Quality checks</h2></div><button className="text-button">View all <ChevronRight size={15} /></button></div><div className="search-field"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search checks..." aria-label="Search quality checks" /></div><div className="check-list">{filteredChecks.map((item) => <div className="check-row" key={item.id}><button className={`check-toggle ${item.status === 'Passed' ? 'checked' : ''}`} onClick={() => toggleCheck(item.id)} aria-label={`Mark ${item.title} ${item.status === 'Passed' ? 'for review' : 'as passed'}`}>{item.status === 'Passed' && <Check size={14} />}</button><div className="check-copy"><strong>{item.title}</strong><span>{item.category}</span></div><span className={`status-pill ${item.tone}`}>{item.status}</span></div>)}{filteredChecks.length === 0 && <div className="empty-state">No checks match “{query}”.</div>}</div></section>
-            <section className="panel score-panel"><div className="panel-heading"><div><p className="eyebrow">Across all dimensions</p><h2>FAIE score</h2></div><button className="icon-button" aria-label="Score details"><CircleHelp size={17} /></button></div><div className="score-ring"><div><strong>100</strong><span>out of 100</span></div></div><div className="score-summary"><span><i className="legend-dot mint" />Perfect</span><span>Last scan 12 min ago</span></div><button className="secondary-button">Run new scan <Activity size={15} /></button></section>
+            <section className="panel checks-panel"><div className="panel-heading"><div><p className="eyebrow">Continuous verification</p><h2>Quality checks</h2></div><button className="text-button" onClick={() => setShowAllChecks((value) => !value)}>{showAllChecks ? 'Show less' : 'View all'} <ChevronRight size={15} /></button></div><div className="search-field"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search checks..." aria-label="Search quality checks" /></div><div className="check-list">{visibleChecks.map((item) => <div className="check-row" key={item.id}><button className={`check-toggle ${item.status === 'Passed' ? 'checked' : ''}`} onClick={() => toggleCheck(item.id)} aria-label={`Mark ${item.title} ${item.status === 'Passed' ? 'for review' : 'as passed'}`}>{item.status === 'Passed' && <Check size={14} />}</button><div className="check-copy"><strong>{item.title}</strong><span>{item.category}</span></div><span className={`status-pill ${item.tone}`}>{item.status}</span></div>)}{filteredChecks.length === 0 && <div className="empty-state">No checks match “{query}”.</div>}</div></section>
+            <section className="panel score-panel"><div className="panel-heading"><div><p className="eyebrow">Across all dimensions</p><h2>FAIE score</h2></div><button className="icon-button" aria-label="Score details"><CircleHelp size={17} /></button></div><div className="score-ring"><div><strong>100</strong><span>out of 100</span></div></div><div className="score-summary"><span><i className="legend-dot mint" />{isScanning ? 'Scanning' : 'Perfect'}</span><span>{isScanning ? 'Running now' : 'Last scan 12 min ago'}</span></div><button className="secondary-button" onClick={runScan} disabled={isScanning}>{isScanning ? 'Scanning...' : 'Run new scan'} <Activity size={15} /></button></section>
           </div>
 
           <section className="bottom-grid"><section className="panel story-panel"><div className="panel-heading"><div><p className="eyebrow">Problem alignment</p><h2>User story coverage</h2></div><button className="text-button">Open backlog <ChevronRight size={15} /></button></div><div className="coverage-row"><div className="coverage-number">100<small>%</small></div><div className="coverage-bar"><div style={{ width: '100%' }} /><span>27 of 27 stories mapped to a tested component</span></div><div className="coverage-arrow"><ArrowUpRight size={18} /></div></div><div className="story-tags"><span><CheckCircle2 size={14} />27 covered</span><span><Clock3 size={14} />0 in progress</span><span><Code2 size={14} />8 components</span></div></section><section className="panel activity-panel"><div className="panel-heading"><div><p className="eyebrow">Recent events</p><h2>Activity</h2></div><button className="icon-button" aria-label="Activity options"><Settings2 size={16} /></button></div><div className="activity-list">{activity.map(({ text, time, icon: Icon, tone }) => <div className="activity-row" key={text}><div className={`activity-icon ${tone}`}><Icon size={16} /></div><div><strong>{text}</strong><span>{time}</span></div></div>)}</div></section></section>
