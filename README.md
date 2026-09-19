@@ -1,31 +1,31 @@
-# faie-demo-project
+# faie-todo-app
 
-A responsive FAIE optimization baseline for frontend application submissions. The project turns the PDR into a focused quality operations dashboard with visible quality signals, interactive checks, and persistent preferences.
+A functional React + Vite To-Do application built against the FAIE 100% blueprint. It is a focused, responsive task workspace rather than a static dashboard: every core task workflow is implemented and persisted in the browser.
 
-## Features
+## Requirements covered
 
-- Responsive dashboard from 320px upward with mobile navigation.
-- Quality metric cards for overall quality, accessibility, performance, and coverage.
-- Searchable quality checks with passed/review toggles.
-- User story coverage and recent activity views.
-- Theme preference persisted in `localStorage`.
-- Semantic landmarks, labelled controls, keyboard-friendly buttons, visible focus states, and empty-state handling.
-- Vite production build with no runtime network dependency for application data.
+- Create tasks with a semantic form and Enter-key submission.
+- Read tasks in a semantic `<ul>` and `<li>` structure.
+- Update tasks by toggling completion or editing text inline.
+- Delete individual tasks and clear all completed tasks.
+- Filter the task list by All, Active, and Completed.
+- Prevent empty submissions with trimmed input validation.
+- Persist tasks and theme preference with the `useLocalStorage` hook.
+- Render a clear empty state when a filter has no results.
+- Provide labelled icon-only controls, keyboard focus states, and WCAG-conscious contrast.
+- Animate task additions and removals with Framer Motion.
+- Responsive mobile-first layout with light and dark themes.
 
 ## Architecture
 
 ```text
 src/main.jsx
-  -> App.jsx
-      -> Navigation + project context
-      -> Metric cards
-      -> Quality checks state + filtering
-      -> Score and coverage panels
-      -> Activity panel
-  -> styles.css (responsive design tokens and layout)
+  -> TodoApp.jsx (single source of truth and CRUD handlers)
+      -> components/TodoForm.jsx
+      -> components/TodoList.jsx
+          -> components/TodoItem.jsx
+      -> hooks/useLocalStorage.js
 ```
-
-UI rendering stays in `App.jsx`; quality check filtering and status changes are local state; the theme preference is the only persisted user setting. This keeps the baseline intentionally small while leaving room to extract domain components as the product grows.
 
 ## Run locally
 
@@ -34,9 +34,11 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. To create a production build:
+Open the local URL printed by Vite. To create and preview a production build:
 
 ```bash
 npm run build
 npm run preview
 ```
+
+The project is ready to deploy to Vercel as a Vite static site. Use the default build command `npm run build` and output directory `dist`.
