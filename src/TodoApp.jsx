@@ -1,5 +1,5 @@
 import { CheckCircle2, ListFilter, Moon, RotateCcw, Sun, Trash2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import TodoForm from './components/TodoForm.jsx';
 import TodoList from './components/TodoList.jsx';
 import { useLocalStorage } from './hooks/useLocalStorage.js';
@@ -17,25 +17,25 @@ function TodoApp() {
     return tasks;
   }, [activeFilter, tasks]);
 
-  const addTask = (text) => {
+  const addTask = useCallback((text) => {
     setTasks((currentTasks) => [{ id: crypto.randomUUID(), text, completed: false }, ...currentTasks]);
-  };
+  }, [setTasks]);
 
-  const toggleTask = (id) => {
+  const toggleTask = useCallback((id) => {
     setTasks((currentTasks) => currentTasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)));
-  };
+  }, [setTasks]);
 
-  const editTask = (id, text) => {
+  const editTask = useCallback((id, text) => {
     setTasks((currentTasks) => currentTasks.map((task) => (task.id === id ? { ...task, text } : task)));
-  };
+  }, [setTasks]);
 
-  const deleteTask = (id) => {
+  const deleteTask = useCallback((id) => {
     setTasks((currentTasks) => currentTasks.filter((task) => task.id !== id));
-  };
+  }, [setTasks]);
 
-  const clearCompleted = () => {
+  const clearCompleted = useCallback(() => {
     setTasks((currentTasks) => currentTasks.filter((task) => !task.completed));
-  };
+  }, [setTasks]);
 
   const completedCount = tasks.filter((task) => task.completed).length;
   const remainingCount = tasks.length - completedCount;

@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion';
 import TodoItem from './TodoItem.jsx';
 
 function TodoList({ tasks, onToggleTask, onEditTask, onDeleteTask }) {
@@ -8,13 +7,11 @@ function TodoList({ tasks, onToggleTask, onEditTask, onDeleteTask }) {
 
   return (
     <ul className="todo-list" aria-label="Tasks">
-      <AnimatePresence initial={false}>
-        {tasks.map((task) => (
-          <motion.li className={`todo-item ${task.completed ? 'is-complete' : ''}`} key={task.id} layout initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.2 }}>
+      {tasks.map((task) => (
+          <li className={`todo-item task-enter ${task.completed ? 'is-complete' : ''}`} key={task.id}>
             <TodoItem task={task} onToggleTask={onToggleTask} onEditTask={onEditTask} onDeleteTask={onDeleteTask} />
-          </motion.li>
-        ))}
-      </AnimatePresence>
+          </li>
+      ))}
     </ul>
   );
 }
